@@ -1,34 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Atelier Mode - AI Fashion Studio
+
+Premium AI-powered fashion ecommerce experience built for agency demos and client showcases. The UI follows a botanical luxury design system with organic serif typography, soft edges, and refined motion.
+
+## Highlights
+
+- Landing experience with editorial storytelling and cinematic hero.
+- Shop and product detail flow with luxury cards and hover motion.
+- AI try-on studio with upload, outfit selection, and before/after comparison.
+- Cart, checkout, and profile UI built for premium ecommerce demos.
+- Node.js API route stub for AI try-on integration.
+
+## Recent UI Cleanup Notes
+
+- Navigation trimmed to core flows only: Shop, AI Try-On, Checkout.
+- Footer links reduced to essential account + cart paths.
+- Added accessible labels to icon-only actions (wishlist) and `type="button"` on filter chips.
+- If you see hydration warnings in dev, check for browser extensions (e.g., Grammarly) that inject attributes.
+
+## Tech Stack
+
+- Next.js (App Router) + TypeScript
+- Tailwind CSS
+- Framer Motion
+- Shadcn-style UI components
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-## Learn More
+- src/app: App Router pages and API routes
+- src/components: UI and site components
+- src/data: Sample product and review data
+- src/lib: Utilities
 
-To learn more about Next.js, take a look at the following resources:
+## Routes Map
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- /: Landing page
+- /shop: Product listing
+- /shop/[slug]: Product detail
+- /tryon: AI try-on studio
+- /cart: Cart
+- /checkout: Checkout UI
+- /profile: Profile UI
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## AI Try-On API
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The try-on endpoint lives at `POST /api/tryon`. It currently returns a stubbed image URL and is ready to be wired to a provider such as Replicate or FAL.ai.
