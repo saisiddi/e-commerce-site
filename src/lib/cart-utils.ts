@@ -29,9 +29,6 @@ export function addToCart(productId: string, quantity: number = 1): CartItem[] {
   }
 
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
-  // debug
-  // eslint-disable-next-line no-console
-  console.log("cart-utils: addToCart ->", productId, quantity, cart);
   return cart;
 }
 
@@ -39,8 +36,6 @@ export function removeFromCart(productId: string): CartItem[] {
   if (typeof window === "undefined") return [];
   const cart = getCart().filter((item) => item.productId !== productId);
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
-  // eslint-disable-next-line no-console
-  console.log("cart-utils: removeFromCart ->", productId, cart);
   return cart;
 }
 
@@ -54,8 +49,6 @@ export function updateCartQuantity(productId: string, quantity: number): CartIte
   }
 
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
-  // eslint-disable-next-line no-console
-  console.log("cart-utils: updateCartQuantity ->", productId, quantity, cart);
   return cart;
 }
 
@@ -84,8 +77,6 @@ export function addToWishlist(productId: string): string[] {
   }
 
   localStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlist));
-  // eslint-disable-next-line no-console
-  console.log("cart-utils: addToWishlist ->", productId, wishlist);
   return wishlist;
 }
 
@@ -93,8 +84,6 @@ export function removeFromWishlist(productId: string): string[] {
   if (typeof window === "undefined") return [];
   const wishlist = getWishlist().filter((id) => id !== productId);
   localStorage.setItem(WISHLIST_KEY, JSON.stringify(wishlist));
-  // eslint-disable-next-line no-console
-  console.log("cart-utils: removeFromWishlist ->", productId, wishlist);
   return wishlist;
 }
 

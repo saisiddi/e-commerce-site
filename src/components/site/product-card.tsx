@@ -3,9 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Heart } from "lucide-react";
+import { Heart, Check } from "lucide-react";
 import { useCart } from "@/lib/cart-context";
-import { useEffect, useState } from "react";
+import { useToast } from "@/lib/toast-context";
+import { useEffect, useState, useRef } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,16 +18,41 @@ type ProductCardProps = {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } = useCart();
+  const { addToast } = useToast();
   const [wish, setWish] = useState<boolean>(false);
+  const [added, setAdded] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
-    // compute wishlist presence only on client after mount to avoid hydration mismatch
     try {
       setWish(isInWishlist(product.id));
-    } catch (err) {
+    } catch {
       setWish(false);
     }
-  }, [product.id]);
+  }, [product.id, isInWishlist]);
+
+  const handleAddToCart = () => {
+    addToCart(product.id);
+    setAdded(true);
+    addToast(`${product.name} added to cart`, "success");
+    clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => setAdded(false), 2000);
+  };
+
+  const handleToggleWish = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (wish) {
+      removeFromWishlist(product.id);
+      setWish(false);
+      addToast(`${product.name} removed from wishlist`, "info");
+    } else {
+      addToWishlist(product.id);
+      setWish(true);
+      addToast(`${product.name} added to wishlist`, "success");
+    }
+  };
+
   return (
     <motion.div
       whileHover={{ y: -6 }}
@@ -58,17 +84,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <button
           type="button"
           aria-label="Toggle wishlist"
-          onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            if (wish) {
-              removeFromWishlist(product.id);
-              setWish(false);
-            } else {
-              addToWishlist(product.id);
-              setWish(true);
-            }
-          }}
+          onClick={handleToggleWish}
           className={`absolute right-4 top-4 z-30 flex h-11 w-11 items-center justify-center rounded-full border-2 bg-white/90 transition duration-200 hover:scale-110 active:scale-95 ${wish ? "border-red-500 bg-red-500/15 text-red-500" : "border-stone/50 text-ink/60 hover:border-red-500 hover:text-red-500"}`}
         >
           <Heart className={`h-5 w-5 ${wish ? "fill-red-500" : ""}`} />
@@ -93,15 +109,18 @@ export function ProductCard({ product }: ProductCardProps) {
         <div className="flex flex-wrap items-center justify-end gap-2">
           <Button
             size="sm"
-            onClick={() => {
-              // eslint-disable-next-line no-console
-              console.log("product-card: Add clicked ->", product.id);
-              addToCart(product.id);
-            }}
-            variant="secondary"
-            className="font-semibold whitespace-nowrap"
+            onClick={handleAddToCart}
+            variant={added ? "primary" : "secondary"}
+            className={`font-semibold whitespace-nowrap transition-all duration-300 ${added ? "scale-105" : ""}`}
           >
-            Add to cart
+            {added ? (
+              <span className="flex items-center gap-1.5">
+                <Check className="h-3.5 w-3.5" />
+                Added
+              </span>
+            ) : (
+              "Add to cart"
+            )}
           </Button>
         </div>
       </div>

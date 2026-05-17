@@ -1,7 +1,7 @@
 const stats = [
-  { label: "AI fittings generated", value: "42k+" },
-  { label: "Luxury styles curated", value: "1.2k" },
-  { label: "Avg. try-on time", value: "38s" },
+  { label: "Styles curated", value: "1.2k+" },
+  { label: "Happy clients", value: "5k+" },
+  { label: "Premium fabrics", value: "50+" },
   { label: "Client satisfaction", value: "98%" },
 ];
 

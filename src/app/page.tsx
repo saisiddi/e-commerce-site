@@ -19,7 +19,7 @@ export default function Home() {
           <SectionHeading
             eyebrow="Featured"
             title="Curated looks for the modern atelier."
-            description="Editorial silhouettes rendered in botanical neutrals and prepared for AI try-on."
+            description="Editorial silhouettes rendered in botanical neutrals for the modern wardrobe."
           />
           <Link href="/shop" className="hidden md:inline-flex">
             <Button variant="secondary" size="sm">
@@ -50,8 +50,8 @@ export default function Home() {
       <section className="grid gap-10">
         <SectionHeading
           eyebrow="Client notes"
-          title="Luxury clients, seamless AI fittings."
-          description="A calm, premium experience that feels like a private fitting studio."
+          title="Luxury clients, seamless style."
+          description="A calm, premium experience that feels like a private styling session."
         />
         <ReviewGrid />
       </section>

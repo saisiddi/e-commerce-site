@@ -6,9 +6,9 @@ import React, { useEffect, useState } from "react";
 import { Heart } from "lucide-react";
 
 import { SectionHeading } from "@/components/site/section-heading";
-import { Button } from "@/components/ui/button";
 import { products } from "@/data/products";
 import { useCart } from "@/lib/cart-context";
+import { useToast } from "@/lib/toast-context";
 
 type ProductPageProps = {
   params: Promise<{ slug: string }>;
@@ -18,13 +18,14 @@ export default function ProductPage({ params }: ProductPageProps) {
   const resolvedParams = React.use(params);
   const product = products.find((item) => item.id === resolvedParams.slug) ?? products[0];
   const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } = useCart();
+  const { addToast } = useToast();
   const [wish, setWish] = useState<boolean>(false);
   const [selectedSize, setSelectedSize] = useState<string>("");
 
   useEffect(() => {
     try {
       setWish(isInWishlist(product.id));
-    } catch (err) {
+    } catch {
       setWish(false);
     }
   }, [product.id, isInWishlist]);
@@ -113,9 +114,11 @@ export default function ProductPage({ params }: ProductPageProps) {
                 if (wish) {
                   removeFromWishlist(product.id);
                   setWish(false);
+                  addToast(`${product.name} removed from wishlist`, "info");
                 } else {
                   addToWishlist(product.id);
                   setWish(true);
+                  addToast(`${product.name} added to wishlist`, "success");
                 }
               }}
               className={`flex h-12 w-12 items-center justify-center rounded-full border-2 transition duration-200 hover:scale-110 active:scale-95 ${wish ? "border-red-500 bg-red-500/15 text-red-500" : "border-stone/50 text-ink/60 hover:border-red-500 hover:text-red-500"}`}
@@ -126,24 +129,22 @@ export default function ProductPage({ params }: ProductPageProps) {
 
           <button
             type="button"
-            onClick={() => addToCart(product.id)}
-            className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-[#2D3A31] px-8 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-soft transition duration-200 hover:bg-[#1f2622] hover:shadow-lg active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C9A84] focus-visible:ring-offset-2"
+            onClick={() => {
+              addToCart(product.id);
+              addToast(`${product.name} added to cart`, "success");
+            }}
+            className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-ink px-8 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-soft transition duration-200 hover:bg-[#1f2622] hover:shadow-lg active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C9A84] focus-visible:ring-offset-2"
           >
             Add to cart
           </button>
 
-          <Link href="/tryon">
-            <Button variant="secondary" size="lg" className="w-full">
-              Launch AI Try-On
-            </Button>
-          </Link>
         </div>
       </div>
 
       <div className="grid gap-10">
         <h2 className="text-4xl font-semibold">Recommended</h2>
         <div className="grid gap-6 md:grid-cols-3">
-          {products.slice(0, 3).map((item) => (
+          {products.filter((p) => p.id !== product.id).slice(0, 3).map((item) => (
             <Link
               key={item.id}
               href={`/shop/${item.id}`}

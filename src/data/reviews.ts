@@ -2,19 +2,19 @@ export const reviews = [
   {
     id: "r1",
     name: "Ava L.",
-    quote: "The drape and the AI try-on felt indistinguishable from a studio fitting.",
+    quote: "The quality and fit exceeded my expectations. Every piece feels intentional.",
     rating: 5,
   },
   {
     id: "r2",
     name: "Noah C.",
-    quote: "Minimal, calm, and premium. The comparison slider is addictive.",
+    quote: "Minimal, calm, and premium. A truly elevated shopping experience.",
     rating: 5,
   },
   {
     id: "r3",
     name: "Mila S.",
-    quote: "Luxury without noise. The styling flow is perfectly editorial.",
+    quote: "Luxury without noise. The curation is perfectly editorial.",
     rating: 4.8,
   },
 ];

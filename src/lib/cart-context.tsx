@@ -25,6 +25,7 @@ interface CartContextType {
   addToWishlist: (productId: string) => void;
   removeFromWishlist: (productId: string) => void;
   isInWishlist: (productId: string) => boolean;
+  isInCart: (productId: string) => boolean;
   clearWishlist: () => void;
 }
 
@@ -35,25 +36,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [wishlist, setWishlist] = useState<string[]>(() => getWishlist());
 
   const handleAddToCart = useCallback((productId: string, quantity = 1) => {
-    // debug
-    // eslint-disable-next-line no-console
-    console.log("cart-context: handleAddToCart called ->", productId, quantity);
     const updatedCart = addToCartStorage(productId, quantity);
     setCart(updatedCart);
   }, []);
 
   const handleRemoveFromCart = useCallback((productId: string) => {
-    // debug
-    // eslint-disable-next-line no-console
-    console.log("cart-context: handleRemoveFromCart called ->", productId);
     const updatedCart = removeFromCartStorage(productId);
     setCart(updatedCart);
   }, []);
 
   const handleUpdateCartQuantity = useCallback((productId: string, quantity: number) => {
-    // debug
-    // eslint-disable-next-line no-console
-    console.log("cart-context: handleUpdateCartQuantity ->", productId, quantity);
     const updatedCart = updateCartQuantityStorage(productId, quantity);
     setCart(updatedCart);
   }, []);
@@ -64,17 +56,11 @@ export function CartProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const handleAddToWishlist = useCallback((productId: string) => {
-    // debug
-    // eslint-disable-next-line no-console
-    console.log("cart-context: handleAddToWishlist ->", productId);
     const updatedWishlist = addToWishlistStorage(productId);
     setWishlist(updatedWishlist);
   }, []);
 
   const handleRemoveFromWishlist = useCallback((productId: string) => {
-    // debug
-    // eslint-disable-next-line no-console
-    console.log("cart-context: handleRemoveFromWishlist ->", productId);
     const updatedWishlist = removeFromWishlistStorage(productId);
     setWishlist(updatedWishlist);
   }, []);

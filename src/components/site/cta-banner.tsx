@@ -9,15 +9,15 @@ export function CtaBanner() {
       <div className="relative z-10 flex flex-col gap-8 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="text-sm uppercase tracking-[0.3em] text-white/70">
-            AI Styling Studio
+            Style Studio
           </p>
           <h3 className="mt-4 text-3xl font-semibold md:text-4xl">
-            Generate your botanical look in under 45 seconds.
+            Find your perfect look in minutes.
           </h3>
         </div>
-        <Link href="/tryon">
+        <Link href="/shop">
           <Button size="lg" className="bg-white text-ink hover:bg-white/90">
-            Launch Try-On
+            Shop Now
           </Button>
         </Link>
       </div>

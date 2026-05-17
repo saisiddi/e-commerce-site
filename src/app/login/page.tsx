@@ -35,7 +35,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-6">
+    <div className="flex items-center justify-center px-6">
       <div className="w-full max-w-md">
         <div className="flex flex-col gap-2 mb-8">
           <p className="text-sm uppercase tracking-[0.4em] text-ink/60">
@@ -83,7 +83,7 @@ export default function LoginPage() {
         </form>
 
         <p className="mt-6 text-center text-sm">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link
             href="/signup"
             className="font-semibold underline hover:text-terracotta transition"

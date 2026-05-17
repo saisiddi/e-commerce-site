@@ -7,7 +7,7 @@ export function Footer() {
         <div>
           <p className="text-lg font-semibold">Atelier Mode</p>
           <p className="mt-4 text-sm text-ink/70">
-            Botanical luxury fashion with AI styling intelligence.
+            Botanical luxury fashion, curated for you.
           </p>
         </div>
         <div>
@@ -16,7 +16,7 @@ export function Footer() {
           </p>
           <div className="mt-4 grid gap-2 text-sm">
             <Link href="/shop">Shop</Link>
-            <Link href="/tryon">AI Try-On</Link>
+            <Link href="/wishlist">Wishlist</Link>
             <Link href="/checkout">Checkout</Link>
           </div>
         </div>
@@ -34,8 +34,21 @@ export function Footer() {
             Newsletter
           </p>
           <p className="mt-4 text-sm text-ink/70">
-            Weekly edit of botanical luxury, AI styling tips, and studio drops.
+            Weekly edit of botanical luxury, style tips, and new drops.
           </p>
+          <div className="mt-4 flex gap-2">
+            <input
+              type="email"
+              placeholder="your@email.com"
+              className="min-w-0 flex-1 rounded-full border border-stone bg-white/60 px-4 py-2 text-sm placeholder:text-ink/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C9A84]"
+            />
+            <button
+              type="button"
+              className="rounded-full bg-ink px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-[#1f2622]"
+            >
+              Subscribe
+            </button>
+          </div>
         </div>
       </div>
     </footer>

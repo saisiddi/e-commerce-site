@@ -1,11 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 
 import { SectionHeading } from "@/components/site/section-heading";
 import { Button } from "@/components/ui/button";
-import { products } from "@/data/products";
+import { Input } from "@/components/ui/input";
 import { useAuth } from "@/lib/auth-context";
 import Link from "next/link";
 
@@ -21,8 +20,7 @@ export default function ProfilePage() {
     setSaving(true);
     try {
       await updateProfile({ name, address, pincode });
-    } catch (err) {
-      // ignore for now
+    } catch {
     } finally {
       setSaving(false);
     }
@@ -38,7 +36,7 @@ export default function ProfilePage() {
       <SectionHeading
         eyebrow="Profile"
         title="Your atelier account"
-        description="Saved try-ons, curated outfits, and order history in one calm space."
+        description="Your orders, preferences, and account details in one calm space."
       />
 
       <div className="grid gap-6 rounded-3xl border border-stone bg-white/70 p-6 md:grid-cols-[0.9fr_1.1fr]">
@@ -49,13 +47,13 @@ export default function ProfilePage() {
 
           <form onSubmit={save} className="mt-6 grid gap-3">
             <label className="text-sm">Name</label>
-            <input value={name} onChange={(e) => setName(e.target.value)} className="rounded border px-3 py-2" />
+            <Input value={name} onChange={(e) => setName(e.target.value)} />
 
             <label className="text-sm">Address</label>
-            <input value={address} onChange={(e) => setAddress(e.target.value)} className="rounded border px-3 py-2" />
+            <Input value={address} onChange={(e) => setAddress(e.target.value)} />
 
             <label className="text-sm">Pincode</label>
-            <input value={pincode} onChange={(e) => setPincode(e.target.value)} className="rounded border px-3 py-2" />
+            <Input value={pincode} onChange={(e) => setPincode(e.target.value)} />
 
             <div className="flex gap-2">
               <Button type="submit" disabled={saving}>{saving ? "Saving..." : "Save profile"}</Button>
@@ -84,23 +82,17 @@ export default function ProfilePage() {
           </div>
 
           <div className="rounded-3xl border border-stone bg-clay/40 p-6">
-            <p className="text-sm uppercase tracking-[0.3em] text-ink/60">AI Try-On History</p>
-            {user?.tryOns && user.tryOns.length > 0 ? (
-              <div className="mt-4 grid gap-3 md:grid-cols-3">
-                {user.tryOns.map((t) => (
-                  <div key={t.id} className="rounded-md border bg-white p-2">
-                    {t.image ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={t.image} alt={`tryon-${t.id}`} className="h-32 w-full object-cover rounded-md" />
-                    ) : (
-                      <div className="h-32 w-full rounded-md bg-stone/40 flex items-center justify-center text-sm text-ink/60">No preview</div>
-                    )}
-                    <div className="mt-2 text-xs text-ink/60">{new Date(t.date).toLocaleString()}</div>
-                  </div>
-                ))}
+            <p className="text-sm uppercase tracking-[0.3em] text-ink/60">Style Preferences</p>
+            {user?.preferences ? (
+              <div className="mt-4 space-y-2 text-sm">
+                {user.preferences.colorPalette && user.preferences.colorPalette.length > 0 && <p>Colors: <span className="font-medium">{user.preferences.colorPalette.join(", ")}</span></p>}
+                {user.preferences.size && <p>Size: <span className="font-medium uppercase">{user.preferences.size}</span></p>}
+                {user.preferences.fitPreference && <p>Fit: <span className="font-medium capitalize">{user.preferences.fitPreference}</span></p>}
+                {user.preferences.occasion && <p>Occasion: <span className="font-medium capitalize">{user.preferences.occasion}</span></p>}
+                {user.preferences.budget && <p>Budget: <span className="font-medium capitalize">{user.preferences.budget}</span></p>}
               </div>
             ) : (
-              <div className="mt-4 text-sm text-ink/60">No try-ons yet.</div>
+              <div className="mt-4 text-sm text-ink/60">No preferences set yet.</div>
             )}
           </div>
         </div>

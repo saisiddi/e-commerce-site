@@ -64,43 +64,34 @@ export default function ProductsPage() {
   }, [filters]);
 
   return (
-    <div className="min-h-screen rounded-3xl bg-white">
-      {/* Back button */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div className="flex flex-col gap-12">
+      <div className="flex items-center justify-between">
         <Link href="/" className="text-ink/60 hover:text-ink transition">
           ← Back
         </Link>
+        <Filters value={filters} onChange={setFilters} />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <SectionHeading 
-          eyebrow="Shop"
-          title="All Products" 
-          description="Browse our complete collection of curated fashion pieces"
-        />
+      <SectionHeading 
+        eyebrow="Shop"
+        title="All Products" 
+        description="Browse our complete collection of curated fashion pieces"
+      />
 
-        {/* Filters at top - Full width */}
-        <div className="mt-8 mb-8">
-          <Filters value={filters} onChange={setFilters} />
+      {filteredProducts.length > 0 ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredProducts.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
         </div>
-
-        {/* Products Grid - Full width */}
-        {filteredProducts.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-ink/60">No products found matching your filters.</p>
-          </div>
-        )}
-
-        {/* Product count */}
-        <div className="mt-8 text-center text-sm text-ink/60">
-          Showing {filteredProducts.length} of {products.length} products
+      ) : (
+        <div className="text-center py-12">
+          <p className="text-ink/60">No products found matching your filters.</p>
         </div>
+      )}
+
+      <div className="text-center text-sm text-ink/60">
+        Showing {filteredProducts.length} of {products.length} products
       </div>
     </div>
   );

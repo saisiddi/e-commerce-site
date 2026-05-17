@@ -9,9 +9,9 @@ import {
 } from "react";
 
 export interface UserPreferences {
-  skinTone?: string;
-  bodyShape?: string;
+  colorPalette?: string[];
   size?: string;
+  fitPreference?: string;
   occasion?: string;
   budget?: string;
 }
@@ -24,7 +24,6 @@ export interface User {
   address?: string;
   pincode?: string;
   orders?: Order[];
-  tryOns?: TryOn[];
 }
 
 export interface OrderItem {
@@ -39,13 +38,6 @@ export interface Order {
   date: string;
 }
 
-export interface TryOn {
-  id: string;
-  image?: string;
-  suggestions?: string[]; // product ids
-  date: string;
-}
-
 interface AuthContextType {
   user: User | null;
   isLoading: boolean;
@@ -55,7 +47,6 @@ interface AuthContextType {
   updatePreferences: (preferences: UserPreferences) => Promise<void>;
   updateProfile: (payload: { name?: string; address?: string; pincode?: string }) => Promise<void>;
   addOrder: (order: Order) => void;
-  addTryOn: (t: TryOn) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -89,7 +80,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email,
       name: email.split("@")[0],
       orders: [],
-      tryOns: [],
     };
 
     setUser(userData);
@@ -107,7 +97,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       email,
       name,
       orders: [],
-      tryOns: [],
     };
 
     setUser(userData);
@@ -150,16 +139,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem("user", JSON.stringify(updated));
   };
 
-  const addTryOn = (t: TryOn) => {
-    if (!user) return;
-    const updated: User = { ...(user as User), tryOns: [...(user.tryOns ?? []), t] };
-    setUser(updated);
-    localStorage.setItem("user", JSON.stringify(updated));
-  };
-
   return (
     <AuthContext.Provider
-      value={{ user, isLoading, login, signup, logout, updatePreferences, updateProfile, addOrder, addTryOn }}
+      value={{ user, isLoading, login, signup, logout, updatePreferences, updateProfile, addOrder }}
     >
       {children}
     </AuthContext.Provider>

@@ -35,7 +35,7 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center px-6">
+    <div className="flex items-center justify-center px-6">
       <div className="w-full max-w-md">
         <div className="flex flex-col gap-2 mb-8">
           <p className="text-sm uppercase tracking-[0.4em] text-ink/60">

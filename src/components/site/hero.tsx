@@ -16,7 +16,7 @@ export function Hero() {
           transition={{ duration: 0.7, ease: "easeOut" }}
           className="text-sm uppercase tracking-[0.4em] text-ink/60"
         >
-          Botanical AI Atelier
+          Botanical Atelier
         </motion.p>
         <motion.h1
           initial={{ opacity: 0, y: 16 }}
@@ -26,7 +26,7 @@ export function Hero() {
         >
           Dress in {" "}
           <em className="font-semibold text-terracotta">living</em> textures with
-          AI-crafted precision.
+          style that speaks.
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: 12 }}
@@ -34,8 +34,8 @@ export function Hero() {
           transition={{ duration: 0.7, delay: 0.2, ease: "easeOut" }}
           className="mt-6 text-lg text-ink/70"
         >
-          A premium fashion storefront blending botanical minimalism with a
-          futuristic AI styling studio. Explore, try-on, and curate a wardrobe
+          A premium fashion storefront blending botanical minimalism with
+          intelligent style curation. Explore and curate a wardrobe
           that flows with you.
         </motion.p>
         <motion.div
@@ -47,9 +47,9 @@ export function Hero() {
           <Link href="/shop">
             <Button size="lg">Shop Collection</Button>
           </Link>
-          <Link href="/tryon">
+          <Link href="/products">
             <Button variant="secondary" size="lg">
-              Try On AI
+              Explore All
             </Button>
           </Link>
         </motion.div>
