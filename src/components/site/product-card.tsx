@@ -31,9 +31,13 @@ export function ProductCard({ product }: ProductCardProps) {
     <motion.div
       whileHover={{ y: -6 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
-      className="group rounded-3xl border border-stone bg-white/80 p-5 shadow-soft"
+      className="group rounded-3xl border border-stone bg-white/80 p-6 shadow-soft"
     >
-      <div className="relative overflow-hidden rounded-[40px]">
+      <Link
+        href={`/shop/${product.id}`}
+        className="relative overflow-hidden rounded-3xl block"
+        aria-label={`View details for ${product.name}`}
+      >
         <Image
           src={product.image}
           alt={product.name}
@@ -41,9 +45,15 @@ export function ProductCard({ product }: ProductCardProps) {
           height={720}
           className="h-72 w-full object-cover transition duration-700 group-hover:scale-105"
         />
-        <div className="absolute left-4 top-4 flex gap-2">
-          {product.trending ? <Badge>Trending</Badge> : null}
-          {product.featured ? <Badge variant="outline">Featured</Badge> : null}
+        <div className="absolute left-4 top-4 right-16 flex flex-wrap gap-2">
+          {product.trending ? (
+            <Badge className="bg-white/90 text-ink shadow-sm">Trending</Badge>
+          ) : null}
+          {product.featured ? (
+            <Badge variant="outline" className="border-stone/60 bg-white/80 text-ink shadow-sm">
+              Featured
+            </Badge>
+          ) : null}
         </div>
         <button
           type="button"
@@ -63,21 +73,24 @@ export function ProductCard({ product }: ProductCardProps) {
         >
           <Heart className={`h-5 w-5 ${wish ? "fill-red-500" : ""}`} />
         </button>
-      </div>
-      <div className="mt-6 flex items-center justify-between">
-        <div>
-          <p className="text-lg font-semibold">{product.name}</p>
-          <p className="text-sm uppercase tracking-[0.2em] text-ink/60">
+      </Link>
+      <div className="mt-5 flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <p className="text-lg font-semibold leading-tight">{product.name}</p>
+          <p className="mt-1 text-xs uppercase tracking-[0.25em] text-ink/50">
             {product.category}
           </p>
         </div>
-        <p className="text-lg font-semibold">${product.price}</p>
+        <p className="text-xl font-semibold text-ink">${product.price}</p>
       </div>
-      <div className="mt-4 flex items-center justify-between">
-        <button type="button" className="rounded-full border-2 border-sage px-3 py-1 text-xs font-semibold text-sage hover:border-terracotta hover:text-terracotta hover:bg-terracotta/5 transition duration-200 hover:scale-105">
+      <div className="mt-4 flex items-center justify-between gap-3">
+        <button
+          type="button"
+          className="rounded-full border-2 border-sage px-3 py-1.5 text-xs font-semibold text-sage transition duration-200 hover:scale-105 hover:border-terracotta hover:text-terracotta hover:bg-terracotta/5"
+        >
           ★ {product.rating}
         </button>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-2">
           <Button
             size="sm"
             onClick={() => {
@@ -90,11 +103,6 @@ export function ProductCard({ product }: ProductCardProps) {
           >
             Add to cart
           </Button>
-          <Link href={`/shop/${product.id}`}>
-            <Button size="sm" variant="secondary" className="font-semibold whitespace-nowrap">
-              View
-            </Button>
-          </Link>
         </div>
       </div>
     </motion.div>

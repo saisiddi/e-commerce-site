@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
+import { Heart } from "lucide-react";
 
 import { SectionHeading } from "@/components/site/section-heading";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,7 @@ export default function ProductPage({ params }: ProductPageProps) {
   const product = products.find((item) => item.id === resolvedParams.slug) ?? products[0];
   const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } = useCart();
   const [wish, setWish] = useState<boolean>(false);
+  const [selectedSize, setSelectedSize] = useState<string>("");
 
   useEffect(() => {
     try {
@@ -26,6 +28,10 @@ export default function ProductPage({ params }: ProductPageProps) {
       setWish(false);
     }
   }, [product.id, isInWishlist]);
+
+  useEffect(() => {
+    setSelectedSize(product.sizes[0] ?? "");
+  }, [product.id, product.sizes]);
 
   return (
     <div className="flex flex-col gap-16">
@@ -76,6 +82,30 @@ export default function ProductPage({ params }: ProductPageProps) {
             </div>
           </div>
 
+          <div className="grid gap-3">
+            <p className="text-xs uppercase tracking-[0.25em] text-ink/60">Select size</p>
+            <div className="flex flex-wrap gap-2">
+              {product.sizes.map((size) => {
+                const isSelected = selectedSize === size;
+                return (
+                  <button
+                    key={size}
+                    type="button"
+                    aria-pressed={isSelected}
+                    onClick={() => setSelectedSize(size)}
+                    className={`rounded-full border-2 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] transition ${
+                      isSelected
+                        ? "border-terracotta bg-terracotta/10 text-terracotta"
+                        : "border-stone text-ink/70 hover:border-terracotta/60 hover:text-terracotta"
+                    }`}
+                  >
+                    {size}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           <div className="flex items-center justify-between gap-4">
             <p className="text-3xl font-semibold">${product.price}</p>
             <button
@@ -90,13 +120,17 @@ export default function ProductPage({ params }: ProductPageProps) {
               }}
               className={`flex h-12 w-12 items-center justify-center rounded-full border-2 transition duration-200 hover:scale-110 active:scale-95 ${wish ? "border-red-500 bg-red-500/15 text-red-500" : "border-stone/50 text-ink/60 hover:border-red-500 hover:text-red-500"}`}
             >
-              <span className={`text-xl ${wish ? "fill-red-500" : ""}`}>♥</span>
+              <Heart className={`h-5 w-5 ${wish ? "fill-red-500" : ""}`} />
             </button>
           </div>
 
-          <Button onClick={() => addToCart(product.id)} size="lg">
+          <button
+            type="button"
+            onClick={() => addToCart(product.id)}
+            className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-[#2D3A31] px-8 text-sm font-semibold uppercase tracking-[0.2em] text-white shadow-soft transition duration-200 hover:bg-[#1f2622] hover:shadow-lg active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8C9A84] focus-visible:ring-offset-2"
+          >
             Add to cart
-          </Button>
+          </button>
 
           <Link href="/tryon">
             <Button variant="secondary" size="lg" className="w-full">
