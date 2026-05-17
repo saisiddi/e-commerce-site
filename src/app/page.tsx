@@ -1,6 +1,5 @@
 import Link from "next/link";
 
-import { CtaBanner } from "@/components/site/cta-banner";
 import { Hero } from "@/components/site/hero";
 import { ProductCard } from "@/components/site/product-card";
 import { ReviewGrid } from "@/components/site/review-grid";
@@ -47,8 +46,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-
-      <CtaBanner />
 
       <section className="grid gap-10">
         <SectionHeading

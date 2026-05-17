@@ -4,6 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
+import { useCart } from "@/lib/cart-context";
+import { useEffect, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -14,6 +16,17 @@ type ProductCardProps = {
 };
 
 export function ProductCard({ product }: ProductCardProps) {
+  const { addToCart, addToWishlist, removeFromWishlist, isInWishlist } = useCart();
+  const [wish, setWish] = useState<boolean>(false);
+
+  useEffect(() => {
+    // compute wishlist presence only on client after mount to avoid hydration mismatch
+    try {
+      setWish(isInWishlist(product.id));
+    } catch (err) {
+      setWish(false);
+    }
+  }, [product.id]);
   return (
     <motion.div
       whileHover={{ y: -6 }}
@@ -34,10 +47,21 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
         <button
           type="button"
-          aria-label="Add to wishlist"
-          className="absolute right-4 top-4 flex h-10 w-10 items-center justify-center rounded-full border border-stone bg-white/80"
+          aria-label="Toggle wishlist"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (wish) {
+              removeFromWishlist(product.id);
+              setWish(false);
+            } else {
+              addToWishlist(product.id);
+              setWish(true);
+            }
+          }}
+          className={`absolute right-4 top-4 z-30 flex h-11 w-11 items-center justify-center rounded-full border-2 bg-white/90 transition duration-200 hover:scale-110 active:scale-95 ${wish ? "border-red-500 bg-red-500/15 text-red-500" : "border-stone/50 text-ink/60 hover:border-red-500 hover:text-red-500"}`}
         >
-          <Heart className="h-4 w-4" />
+          <Heart className={`h-5 w-5 ${wish ? "fill-red-500" : ""}`} />
         </button>
       </div>
       <div className="mt-6 flex items-center justify-between">
@@ -50,12 +74,28 @@ export function ProductCard({ product }: ProductCardProps) {
         <p className="text-lg font-semibold">${product.price}</p>
       </div>
       <div className="mt-4 flex items-center justify-between">
-        <p className="text-sm text-ink/70">{product.rating} rating</p>
-        <Link href={`/shop/${product.id}`}>
-          <Button size="sm" variant="secondary">
-            View
+        <button type="button" className="rounded-full border-2 border-sage px-3 py-1 text-xs font-semibold text-sage hover:border-terracotta hover:text-terracotta hover:bg-terracotta/5 transition duration-200 hover:scale-105">
+          ★ {product.rating}
+        </button>
+        <div className="flex items-center gap-2">
+          <Button
+            size="sm"
+            onClick={() => {
+              // eslint-disable-next-line no-console
+              console.log("product-card: Add clicked ->", product.id);
+              addToCart(product.id);
+            }}
+            variant="secondary"
+            className="font-semibold whitespace-nowrap"
+          >
+            Add to cart
           </Button>
-        </Link>
+          <Link href={`/shop/${product.id}`}>
+            <Button size="sm" variant="secondary" className="font-semibold whitespace-nowrap">
+              View
+            </Button>
+          </Link>
+        </div>
       </div>
     </motion.div>
   );
