@@ -47,7 +47,7 @@ Typography: headings use `Playfair Display` (serif), body uses `Source Sans 3` (
 | `/` | `src/app/page.tsx` | Static | No | Homepage — hero, stats, featured/trending products, reviews |
 | `/shop` | `src/app/shop/page.tsx` | Static | No | Product listing with search, filters, AI recommendations |
 | `/shop/[slug]` | `src/app/shop/[slug]/page.tsx` | Dynamic | No | Product detail — image, sizes, add-to-cart, wishlist |
-| `/products` | `src/app/products/page.tsx` | Static | No | Alternative product grid with filters only |
+
 | `/cart` | `src/app/cart/page.tsx` | Static | No | Cart management — qty, remove, checkout link |
 | `/checkout` | `src/app/checkout/page.tsx` | Static | Yes | Checkout form — name, email, address, order summary |
 | `/login` | `src/app/login/page.tsx` | Static | No | Login form with redirect support |
@@ -256,7 +256,7 @@ Returns top 5 products with `score > 0`, sorted descending by score (ties broken
 
 When user has preferences, `/shop` fetches suggestions on page load and shows a **"Recommended for you"** section (Sparkles icon + AI badge) above the main grid — up to 3 products in a row.
 
-### 5. Product Filtering (`/shop` + `/products`)
+### 5. Product Filtering (`/shop`)
 
 - **Text search**: searches name, description, fabric, category, and colors
 - **Price range**: dual-thumb slider + number inputs (min/max derived from product data)
@@ -265,7 +265,7 @@ When user has preferences, `/shop` fetches suggestions on page load and shows a 
 - **Fabrics**: toggle chip grid
 - **Style**: toggle chip grid (categories)
 
-All filters are dynamically extracted from product data. Filters component is reusable across `/shop` and `/products`.
+All filters are dynamically extracted from product data. Filters component is used on the `/shop` page.
 
 ### 6. Cart Management
 

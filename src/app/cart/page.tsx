@@ -47,6 +47,7 @@ export default function CartPage() {
         setAiSuggestions(all.filter((p) => !cartProductIds.has(p.id)).slice(0, 3));
       })
       .catch(() => setAiSuggestions([]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hasItems]);
 
   return (
@@ -64,7 +65,7 @@ export default function CartPage() {
       {items.length === 0 ? (
         <div className="rounded-3xl border border-stone bg-white/70 p-12 text-center">
           <p className="text-ink/60 mb-4">Your cart is empty</p>
-          <Link href="/products">
+          <Link href="/shop">
             <Button>Continue Shopping</Button>
           </Link>
         </div>

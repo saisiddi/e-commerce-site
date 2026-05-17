@@ -47,7 +47,7 @@ export function Hero() {
           <Link href="/shop">
             <Button size="lg">Shop Collection</Button>
           </Link>
-          <Link href="/products">
+          <Link href="/shop">
             <Button variant="secondary" size="lg">
               Explore All
             </Button>

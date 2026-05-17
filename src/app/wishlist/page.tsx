@@ -34,7 +34,7 @@ export default function WishlistPage() {
         <div className="rounded-3xl border border-stone bg-white/70 p-12 text-center">
           <Heart className="h-12 w-12 mx-auto mb-4 text-stone" />
           <p className="text-ink/60 mb-4">Your wishlist is empty</p>
-          <Link href="/products">
+          <Link href="/shop">
             <Button>Explore Products</Button>
           </Link>
         </div>
