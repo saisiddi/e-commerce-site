@@ -3,7 +3,6 @@ import { Playfair_Display, Source_Sans_3 } from "next/font/google";
 
 import { Footer } from "@/components/site/footer";
 import { Navbar } from "@/components/site/navbar";
-import ClickTracer from "@/components/site/click-tracer";
 import { ScrollToTop } from "@/components/site/scroll-to-top";
 import { AuthProvider } from "@/lib/auth-context";
 import { CartProvider } from "@/lib/cart-context";
@@ -41,7 +40,6 @@ export default function RootLayout({
         <AuthProvider>
           <CartProvider>
             <ToastProvider>
-              <ClickTracer />
               <ScrollToTop />
               <div className="grain-overlay" />
               <Navbar />
