@@ -45,6 +45,8 @@ h6 {
   background-repeat: repeat;
 }
 
-.text-balance {
-  text-wrap: balance;
+@supports (text-wrap: pretty) {
+  .text-balance {
+    text-wrap: pretty;
+  }
 }

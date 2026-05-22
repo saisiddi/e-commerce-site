@@ -4,11 +4,11 @@
 -- 1. Drop existing objects for a clean slate
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 DROP FUNCTION IF EXISTS handle_new_user();
-DROP TABLE IF EXISTS orders;
-DROP TABLE IF EXISTS profiles;
+DROP TABLE IF EXISTS public.orders;
+DROP TABLE IF EXISTS public.profiles;
 
 -- 2. Profiles table (extends Supabase Auth users)
-CREATE TABLE profiles (
+CREATE TABLE public.profiles (
   id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   email TEXT,
   name TEXT,
@@ -22,24 +22,24 @@ CREATE TABLE profiles (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
-ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Users can view own profile"
-  ON profiles FOR SELECT
+  ON public.profiles FOR SELECT
   USING (auth.uid() = id);
 
 CREATE POLICY "Users can insert own profile"
-  ON profiles FOR INSERT
+  ON public.profiles FOR INSERT
   WITH CHECK (auth.uid() = id);
 
 CREATE POLICY "Users can update own profile"
-  ON profiles FOR UPDATE
+  ON public.profiles FOR UPDATE
   USING (auth.uid() = id);
 
 -- 3. Orders table
-CREATE TABLE orders (
+CREATE TABLE public.orders (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-  user_id UUID NOT NULL REFERENCES profiles(id),
+  user_id UUID NOT NULL REFERENCES public.profiles(id),
   items JSONB NOT NULL DEFAULT '[]',
   total DECIMAL(10,2) NOT NULL,
   status TEXT DEFAULT 'pending',
@@ -47,21 +47,21 @@ CREATE TABLE orders (
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
-ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Users can view own orders"
-  ON orders FOR SELECT
+  ON public.orders FOR SELECT
   USING (auth.uid() = user_id);
 
 CREATE POLICY "Users can insert own orders"
-  ON orders FOR INSERT
+  ON public.orders FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
 -- 4. Auto-create profile on signup
 CREATE OR REPLACE FUNCTION handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO profiles (id, email, name)
+  INSERT INTO public.profiles (id, email, name)
   VALUES (
     NEW.id,
     NEW.email,
@@ -69,7 +69,7 @@ BEGIN
   );
   RETURN NEW;
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 CREATE TRIGGER on_auth_user_created
   AFTER INSERT ON auth.users

@@ -86,7 +86,7 @@ export default function LoginPage() {
           Don&apos;t have an account?{" "}
           <Link
             href="/signup"
-            className="font-semibold underline hover:text-terracotta transition"
+            className="font-semibold underline text-terracotta transition hover:text-terracotta/80"
           >
             Sign up
           </Link>
