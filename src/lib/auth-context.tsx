@@ -9,7 +9,7 @@ import {
   useCallback,
 } from "react";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
-import { createClient } from "@/utils/supabase/client";
+import { createClient, isSupabaseConfigured } from "@/utils/supabase/client";
 
 export interface UserPreferences {
   colorPalette?: string[];
@@ -117,6 +117,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [supabase] = useState(createClient);
 
   const hydrateUser = useCallback(async (authUser: SupabaseUser) => {
+    if (!isSupabaseConfigured || !supabase) return;
     const [profile, orders] = await Promise.all([
       fetchProfile(supabase, authUser.id),
       fetchOrders(supabase, authUser.id),
@@ -127,97 +128,175 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [supabase]);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) {
-        hydrateUser(session.user).finally(() => setIsLoading(false));
-      } else {
+    if (isSupabaseConfigured && supabase) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        if (session?.user) {
+          hydrateUser(session.user).finally(() => setIsLoading(false));
+        } else {
+          setIsLoading(false);
+        }
+      });
+
+      const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+        if (session?.user) {
+          hydrateUser(session.user);
+        } else {
+          setUser(null);
+        }
+      });
+
+      return () => subscription.unsubscribe();
+    } else {
+      console.warn("Supabase is not configured. Falling back to localStorage auth simulation.");
+      const storedUser = localStorage.getItem("user");
+      let parsedUser: User | null = null;
+      if (storedUser) {
+        try {
+          parsedUser = JSON.parse(storedUser);
+        } catch (error) {
+          console.error("Failed to parse stored user", error);
+        }
+      }
+      const userToSet = parsedUser;
+      Promise.resolve().then(() => {
+        setUser(userToSet);
         setIsLoading(false);
-      }
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        hydrateUser(session.user);
-      } else {
-        setUser(null);
-      }
-    });
-
-    return () => subscription.unsubscribe();
+      });
+    }
   }, [supabase, hydrateUser]);
 
   const login = async (email: string, password: string) => {
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
+    if (isSupabaseConfigured && supabase) {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+    } else {
+      if (!email || !password) {
+        throw new Error("Email and password are required");
+      }
+      const userData: User = {
+        id: Math.random().toString(36).substring(2, 11),
+        email,
+        name: email.split("@")[0],
+        orders: [],
+      };
+      setUser(userData);
+      localStorage.setItem("user", JSON.stringify(userData));
+    }
   };
 
   const signup = async (email: string, password: string, name: string) => {
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { name } },
-    });
-    if (error) throw error;
+    if (isSupabaseConfigured && supabase) {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { name } },
+      });
+      if (error) throw error;
+    } else {
+      if (!email || !password || !name) {
+        throw new Error("All fields are required");
+      }
+      const userData: User = {
+        id: Math.random().toString(36).substring(2, 11),
+        email,
+        name,
+        orders: [],
+      };
+      setUser(userData);
+      localStorage.setItem("user", JSON.stringify(userData));
+    }
   };
 
   const logout = async () => {
-    const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    if (isSupabaseConfigured && supabase) {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+    } else {
+      setUser(null);
+      localStorage.removeItem("user");
+    }
   };
 
   const updatePreferences = async (preferences: UserPreferences) => {
     if (!user) throw new Error("User not logged in");
 
-    const { error } = await supabase.from("profiles").upsert({
-      id: user.id,
-      color_palette: preferences.colorPalette ?? null,
-      size: preferences.size ?? null,
-      fit_preference: preferences.fitPreference ?? null,
-      occasion: preferences.occasion ?? null,
-      budget: preferences.budget ?? null,
-    });
+    if (isSupabaseConfigured && supabase) {
+      const { error } = await supabase.from("profiles").upsert({
+        id: user.id,
+        color_palette: preferences.colorPalette ?? null,
+        size: preferences.size ?? null,
+        fit_preference: preferences.fitPreference ?? null,
+        occasion: preferences.occasion ?? null,
+        budget: preferences.budget ?? null,
+      });
 
-    if (error) throw error;
-    setUser((prev) => prev ? { ...prev, preferences } : prev);
+      if (error) throw error;
+      setUser((prev) => prev ? { ...prev, preferences } : prev);
+    } else {
+      const updatedUser: User = { ...user, preferences };
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+    }
   };
 
   const updateProfile = async (payload: { name?: string; address?: string; pincode?: string }) => {
     if (!user) throw new Error("User not logged in");
 
-    const { error } = await supabase.from("profiles").upsert({
-      id: user.id,
-      ...payload,
-    });
+    if (isSupabaseConfigured && supabase) {
+      const { error } = await supabase.from("profiles").upsert({
+        id: user.id,
+        ...payload,
+      });
 
-    if (error) throw error;
-    setUser((prev) => prev ? { ...prev, ...payload } : prev);
+      if (error) throw error;
+      setUser((prev) => prev ? { ...prev, ...payload } : prev);
+    } else {
+      const updatedUser: User = { ...user, ...payload };
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+    }
   };
 
   const addOrder = async (order: Omit<Order, "id" | "date">) => {
     if (!user) throw new Error("User not logged in");
 
-    const { data, error } = await supabase
-      .from("orders")
-      .insert({
-        user_id: user.id,
+    if (isSupabaseConfigured && supabase) {
+      const { data, error } = await supabase
+        .from("orders")
+        .insert({
+          user_id: user.id,
+          items: order.items,
+          total: order.total,
+        })
+        .select("id, created_at")
+        .single();
+
+      if (error) throw error;
+
+      const newOrder: Order = {
+        id: data.id,
         items: order.items,
         total: order.total,
-      })
-      .select("id, created_at")
-      .single();
+        date: data.created_at,
+      };
 
-    if (error) throw error;
-
-    const newOrder: Order = {
-      id: data.id,
-      items: order.items,
-      total: order.total,
-      date: data.created_at,
-    };
-
-    setUser((prev) =>
-      prev ? { ...prev, orders: [...(prev.orders ?? []), newOrder] } : prev
-    );
+      setUser((prev) =>
+        prev ? { ...prev, orders: [...(prev.orders ?? []), newOrder] } : prev
+      );
+    } else {
+      const newOrder: Order = {
+        id: Math.random().toString(36).substring(2, 11),
+        items: order.items,
+        total: order.total,
+        date: new Date().toISOString(),
+      };
+      const updatedUser: User = {
+        ...user,
+        orders: [...(user.orders ?? []), newOrder],
+      };
+      setUser(updatedUser);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+    }
   };
 
   return (
